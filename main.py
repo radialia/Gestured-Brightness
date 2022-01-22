@@ -36,39 +36,44 @@ while cap.isOpened():
 
     # Finds index of each landmark on the recognised hand
     landmarkList = detector.findIndex(video)
+    # Get which fingers are raised up
+    fingers = detector.fingerIsUp()
 
     if(len(landmarkList) != 0):
         # Gets landmarks of thumb and index finger
-        thumb = landmarkList.get(4)
-        index = landmarkList.get(8)
+        thumb = landmarkList[4]
+        index = landmarkList[8]
 
-        if(thumb and index):
-            # Get the x and y coordinates from the landmarks
-            thumb_x, thumb_y = thumb[0], thumb[1]
-            index_x, index_y = index[0], index[1]
+        # If the thumb and index fingers are raised up
+        if(fingers[0] == 1 and fingers[1] == 1):
 
-            # Get the center point between the thumb and index finger
-            center_x, center_y = (thumb_x+index_x)//2, (thumb_y+index_y)//2
+            if(thumb and index):
+                # Get the x and y coordinates from the landmarks
+                thumb_x, thumb_y = thumb[1], thumb[2]
+                index_x, index_y = index[1], index[2]
 
-            # Draw circles on the indexes and a line in between them
-            cv2.circle(video, (thumb_x, thumb_y),
-                       10, (20, 63, 255), cv2.FILLED)
-            cv2.circle(video, (index_x, index_y),
-                       10, (20, 63, 255), cv2.FILLED)
-            cv2.line(video, (thumb_x, thumb_y),
-                     (index_x, index_y), (20, 241, 255), 3)
-            # Draw a circle in the middle
-            cv2.circle(video, (center_x, center_y),
-                       5, (229, 45, 0), cv2.FILLED)
+                # Get the center point between the thumb and index finger
+                center_x, center_y = (thumb_x+index_x)//2, (thumb_y+index_y)//2
 
-            # Get the distance between the index finger and thumb using distance formula
-            distance = math.sqrt(
-                math.pow((thumb_x-index_x), 2) + math.pow((thumb_y-index_y), 2))
-            # Convert the min andd amx limits of distance between the thumb and index finger into a range of 0 and 100
-            brightness = np.interp(distance, [10, 290], [0, 100])
+                # Draw circles on the indexes and a line in between them
+                cv2.circle(video, (thumb_x, thumb_y),
+                           10, (20, 63, 255), cv2.FILLED)
+                cv2.circle(video, (index_x, index_y),
+                           10, (20, 63, 255), cv2.FILLED)
+                cv2.line(video, (thumb_x, thumb_y),
+                         (index_x, index_y), (20, 241, 255), 3)
+                # Draw a circle in the middle
+                cv2.circle(video, (center_x, center_y),
+                           5, (229, 45, 0), cv2.FILLED)
 
-            # Set the brightness accordingly
-            sbc.set_brightness(brightness, force=True)
+                # Get the distance between the index finger and thumb using distance formula
+                distance = math.sqrt(
+                    math.pow((thumb_x-index_x), 2) + math.pow((thumb_y-index_y), 2))
+                # Convert the min andd amx limits of distance between the thumb and index finger into a range of 0 and 100
+                brightness = np.interp(distance, [10, 290], [0, 100])
+
+                # Set the brightness accordingly
+                sbc.set_brightness(brightness, force=True)
 
     # Show the window
     cv2.imshow('Gestured Brightness', video)
