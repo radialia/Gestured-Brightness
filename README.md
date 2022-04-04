@@ -39,7 +39,7 @@ Go to the project directory
 Install dependencies
 
 ```bash
-  pip install requirememts.txt
+  pip install -r .\requirememts.txt
 ```
 
 Run the program
