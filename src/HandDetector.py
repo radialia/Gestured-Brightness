@@ -11,7 +11,7 @@ class Detector():
         self.trackCon = trackCon
 
         self.mpHands = mp.solutions.hands
-        self.hands = self.mpHands.Hands(self.mode, self.maxHands, self.model_complexity,
+        self.hands = self.mpHands.Hands(self.mode, self.maxHands,
                                         min_detection_confidence=self.detectionCon, min_tracking_confidence=self.trackCon)
         self.tipIds = [4, 8, 12, 16, 20]
 
